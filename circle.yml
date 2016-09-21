@@ -11,6 +11,7 @@ dependencies:
 checkout:
   post:
     - sudo apt-get -y install libboost-all-dev
+    - sudo apt-get -y install xsltproc
     - cd /tmp
     - sudo apt-get -y purge cmake
     - curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | sudo tar -xzC /opt
@@ -18,6 +19,7 @@ checkout:
     - git submodule init 
     - git submodule update
     - cd $IROHA_HOME/core/vendor/Aeron; ./gradlew; mkdir -p cppbuild/Debug; cd cppbuild/Debug; cmake ../..; cmake --build . --clean-first; ctest
+    - cd $IROHA_HOME/core/vendor/KeccakCodePackage; make; make generic64/libkeccak.a
     - cd $IROHA_HOME/core/vendor/leveldb; make
     - cd $IROHA_HOME/core/vendor/ed25519; make
     - cd $IROHA_HOME/core/vendor/yaml-cpp; mkdir build; cd build; cmake ..; make
