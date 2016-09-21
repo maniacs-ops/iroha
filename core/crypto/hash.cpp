@@ -12,7 +12,7 @@ namespace hash {
     SHA3_256(
       output,
       (const unsigned char *)message.c_str(),
-      message.size());
+      (size_t)message.size());
 
     std::string res = "";
     char front, back;
@@ -33,7 +33,7 @@ namespace hash {
     SHA3_512(
       output,
       (const unsigned char *)message.c_str(),
-      message.size());
+      (size_t)message.size());
 
     std::string res = "";
     char front, back;

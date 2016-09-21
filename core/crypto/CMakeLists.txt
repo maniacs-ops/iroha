@@ -2,36 +2,32 @@
 SET(KECCAK_PATH  "${PROJECT_SOURCE_DIR}/core/vendor/KeccakCodePackage")
 SET(ED25519_PATH "${PROJECT_SOURCE_DIR}/core/vendor/ed25519")
 
-include_directories(${KECCAK_PATH}/)
-include_directories(${KECCAK_PATH}/Common/)
-include_directories(${KECCAK_PATH}/SnP/)
-include_directories(${KECCAK_PATH}/Constructions/)
-include_directories(${KECCAK_PATH}/Modes/)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-200/Compact)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-400/Reference)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-800/Compact)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-1600/Optimized64/ufull)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-1600/Optimized/)
-include_directories(${KECCAK_PATH}/SnP/KeccakP-1600/Optimized64/)
+#SET(CMAKE_SHARED_LINKER_FLAGS "-L${KECCAK_PATH}/bin/generic64/ -lkeccak  -Wl,-ukeccak")
 
-link_directories(${ED25519_PATH})
-
-ADD_LIBRARY(hash STATIC
-  hash.cpp
-  ${KECCAK_PATH}/SnP/KeccakP-1600/Optimized64/KeccakP-1600-opt64.c
-  ${KECCAK_PATH}/Constructions/KeccakSponge.c
-  ${KECCAK_PATH}/Modes/SimpleFIPS202.c
-)
+FILE(GLOB_RECURSE KECCAK_OBJ ${KECCAK_PATH}/bin/.build/generic64/libkeccak.a/*.o)
 
 include_directories(${ED25519_PATH}/src)
+include_directories(${KECCAK_PATH}/bin/generic64/libkeccak.a.headers)
 
+link_directories(${ED25519_PATH})
+link_directories(${KECCAK_PATH}/bin/generic64)
+
+# Hash
+ADD_LIBRARY(hash STATIC
+  ${KECCAK_OBJ}
+  hash.cpp
+)
+target_link_libraries(hash
+  keccak
+)
+
+# Signature
 ADD_LIBRARY(signature STATIC
   signature.cpp
 )
 target_link_libraries(signature
   ed25519
 )
+
+# Base64
 ADD_LIBRARY(base64 STATIC base64.cpp)
-target_link_libraries(base64
-  ssl
-  crypto)
